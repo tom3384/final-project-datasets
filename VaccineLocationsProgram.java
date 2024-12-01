@@ -112,11 +112,11 @@ public class VaccineLocationsProgram {
         // Convert the HashSet back to an ArrayList
         records = new ArrayList<>(uniqueRecords);
 
-        
+        // If the user entered city, it will prompt the user to enter their city and will filter locations by their city. 
         if (userInput.equals("city")) {
             System.out.println("Please enter your city.");
             String userInputCity = userInputScanner.nextLine();
-            System.out.println("This program will now start filtering locations in your City: " + userInputCity);
+            System.out.println("This program will now start filtering vaccination locations in your City: " + userInputCity);
             printLocationsByCity(userInputCity);
 
         // This can sometimes have extras count because cities might be in other states, like stockton has 2 extra counts for the state of IL. This would require the user to also enter their State, but it's extra input that's not too necessary right now for this project. 
@@ -125,6 +125,18 @@ public class VaccineLocationsProgram {
         // System.out.println(countCityVaccinationLocations("Stockton", "CA"));
         System.out.println(countCityVaccinationLocations(userInputCity));
         }
+
+        if (userInput.equals("zip")) {
+            System.out.println("Please enter your zip code.");
+            String userInputZip = userInputScanner.nextLine();
+            System.out.println("This program will now start filtering vaccination locations in your Zip code: " + userInputZip);
+            printLocationsByZip(userInputZip);
+
+            // Prints out the number of the number of vaccination locations in zip
+            System.out.print("The number of vaccination locations in " + userInputZip + " is: ");
+            System.out.println(countCityVaccinationLocationsZip(userInputZip));
+        }
+        
 
         // System.out.println("Unique records count: " + records.size());
 
@@ -178,7 +190,29 @@ public class VaccineLocationsProgram {
         return count;
     }
 
-    // Print locations by city only, not by city and state
+    // goes through the whole record to find vaccination locations in a given zip
+    public static int countCityVaccinationLocationsZip(String zip)  {
+        int count = 0;        
+
+        for (VaccineProviderInfo provider : records) {
+            
+            // if (provider.getLocAdminZip().equalsIgnoreCase(zip)) {
+
+            String providerZip = provider.getLocAdminZip(); 
+
+            // The substring() method returns a substring from the string, since some of the zip codes in the CSV use the 9 digit zip code.
+            // if (providerZip != null && length greater than or equal to 5)
+            // If we do it without null and length, then it will give us error code like: Exception in thread "main" java.lang.StringIndexOutOfBoundsException: Range [0, 5) out of bounds for length 2
+            // if (providerZip.substring(0,5).equals(zip)) {
+            if (providerZip != null && providerZip.length() >= 5 && 
+                providerZip.substring(0, 5).equals(zip)) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+
     public static int countCityVaccinationLocations(String city)  {
         int count = 0;        
         // goes through the whole record to find vaccination locations in a given city
@@ -202,6 +236,28 @@ public class VaccineLocationsProgram {
         // Enhanced for loop, similar to a for loop 
         for (VaccineProviderInfo provider : records) {
             if (provider.getLocAdminCity().equalsIgnoreCase(city)) {
+                System.out.println(provider); // Print the provider details
+            }
+        }
+    }
+
+    public static void printLocationsByZip(String zip) {
+        System.out.println("Locations in " + zip + ":");
+    
+        // Convert the city name to lowercase for case-insensitive matching
+        // Enhanced for loop, similar to a for loop 
+        for (VaccineProviderInfo provider : records) {
+            
+            // if (provider.getLocAdminZip().equalsIgnoreCase(zip)) {
+
+            String providerZip = provider.getLocAdminZip(); 
+
+            // The substring() method returns a substring from the string.
+            // if (providerZip != null && length greater than or equal to 5)
+            // If we do it without null and length, then it will give us error code like: Exception in thread "main" java.lang.StringIndexOutOfBoundsException: Range [0, 5) out of bounds for length 2
+            // if (providerZip.substring(0,5).equals(zip)) {
+            if (providerZip != null && providerZip.length() >= 5 && 
+                providerZip.substring(0, 5).equals(zip)) {
                 System.out.println(provider); // Print the provider details
             }
         }

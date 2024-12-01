@@ -409,7 +409,7 @@ public class VaccineProviderInfo {
                 // ", locStoreNo='" + locStoreNo + '\'' +
                 "Phone='" + locPhone + '\'' +
                 ", Name='" + locName + '\'' +
-                ", Street1='" + locAdminStreet1 + '\'' +
+                ", Street='" + locAdminStreet1 + '\'' +
                 // ", locAdminStreet2='" + locAdminStreet2 + '\'' +
                 ", City='" + locAdminCity + '\'' +
                 ", State='" + locAdminState + '\'' +
@@ -433,7 +433,7 @@ public class VaccineProviderInfo {
                 // ", quantityLastUpdated='" + quantityLastUpdated + '\'' +
                 // ", latitude='" + latitude + '\'' +
                 // ", longitude='" + longitude + '\'' +
-                ", category='" + category + '\'' +
+                // ", category='" + category + '\'' +
                 // ", unnamedColumn='" + unnamedColumn + '\'' +
                 // ", offersFreeMasks=" + offersFreeMasks +
                 ", minAgeMonths=" + minAgeMonths +
