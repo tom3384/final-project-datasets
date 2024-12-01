@@ -5,6 +5,7 @@
 
 // provider_location_guid	loc_store_no	loc_phone	loc_name	loc_admin_street1	loc_admin_street2	loc_admin_city	loc_admin_state	loc_admin_zip	sunday_hours	monday_hours	tuesday_hours	wednesday_hours	thursday_hours	friday_hours	saturday_hours	web_address	pre_screen	insurance_accepted	walkins_accepted	provider_notes	ndc	med_name	in_stock	supply_level	quantity_last_updated	latitude	longitude	Category	Unnamed Column	offers_free_masks	min_age_months	min_age_years	bridge_access_program
 
+import java.util.Objects;
 
 public class VaccineProviderInfo {
     private String providerLocationGuid;
@@ -357,4 +358,26 @@ public class VaccineProviderInfo {
         return bridgeAccessProgram;
     } 
 
+
+
+    // *    Title: Converting Arraylist into HashSet datatype to remove duplicates. This is because a hashset only allows unique elements. Adding an object to the Hashset automatically checks for duplicates based on the equals and hashCode methods that I put in the VaccineProviderInfo.java file.
+    // *    Author: Chatgpt
+    // *    Date: 2024
+    // *    Availability: http://www.chatgpt.com
+    // Convert the ArrayList to a HashSet to remove duplicates
+    // Indicates that a method declaration is intended to override a method declaration in a supertype
+    // These equals and hashCode methods help properly detect the duplicates in the store number and street address. 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VaccineProviderInfo that = (VaccineProviderInfo) o;
+        return locStoreNo.equals(that.locStoreNo) &&
+               locAdminStreet1.equalsIgnoreCase(that.locAdminStreet1); // Case-insensitive
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(locStoreNo.toLowerCase(), locAdminStreet1.toLowerCase());
+    }
 }

@@ -6,12 +6,15 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class VaccineLocationsProgram {
     //arraylist
     // Code from class notes and previous assignment
 	public static ArrayList<VaccineProviderInfo> records = new ArrayList<VaccineProviderInfo>();
+
 
 	public static void main(String[] args) {
 		//read in our data and create this records Arraylist
@@ -87,12 +90,27 @@ public class VaccineLocationsProgram {
             ));			
         }// end while loop of scanning in the excel to the fields
 
+
+
+        // *    Title: Converting Arraylist into HashSet data structure to remove duplicates. This is because a hashset only allows unique elements. Adding an object to the Hashset automatically checks for duplicates based on the equals and hashCode methods that I put in the VaccineProviderInfo.java file.
+        // The original ArrayList data structure is still useful because the duplicates in the csv file are for different COVID vaccine brands, which can be used later for something else if we need to (as long as we do it before converting to HashSet).
+        // *    Author: Chatgpt
+        // *    Date: 2024
+        // *    Availability: http://www.chatgpt.com
+        // Convert the ArrayList to a HashSet to remove duplicates
+        Set<VaccineProviderInfo> uniqueRecords = new HashSet<>(records);
+        // Convert the HashSet back to an ArrayList
+        records = new ArrayList<>(uniqueRecords);
+
+        
+        // System.out.println("Unique records count: " + records.size());
+
         // Prints out the number of the number of vaccination locations
         System.out.print("The number of vaccination locations is: ");
         System.out.println(countCityVaccinationLocations());
 
         // Prints out the number of the number of vaccination locations in Stockton 
-        System.out.print("The number of vaccination locations is in Stockton is: ");
+        System.out.print("The number of vaccination locations is in Stockton, CA is: ");
         System.out.println(countCityVaccinationLocations("Stockton", "CA"));
 
 
@@ -163,7 +181,7 @@ public class VaccineLocationsProgram {
         try {
             Integer.parseInt(value);
             return true;
-            
+
         // Thrown to indicate that the application has attempted to convert a string to one of the numeric types, but that the string does not have the appropriate format.
         } catch (NumberFormatException e) {
             return false;
