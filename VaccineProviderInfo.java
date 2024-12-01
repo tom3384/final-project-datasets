@@ -3,6 +3,7 @@
 // CPSC 39 project
 // Getters and setters and constructor 
 
+
 // provider_location_guid	loc_store_no	loc_phone	loc_name	loc_admin_street1	loc_admin_street2	loc_admin_city	loc_admin_state	loc_admin_zip	sunday_hours	monday_hours	tuesday_hours	wednesday_hours	thursday_hours	friday_hours	saturday_hours	web_address	pre_screen	insurance_accepted	walkins_accepted	provider_notes	ndc	med_name	in_stock	supply_level	quantity_last_updated	latitude	longitude	Category	Unnamed Column	offers_free_masks	min_age_months	min_age_years	bridge_access_program
 
 import java.util.Objects;
@@ -89,6 +90,8 @@ public class VaccineProviderInfo {
         this.bridgeAccessProgram = bridgeAccessProgram; //33
     }
 
+    // Setters and getters are methods used to control access to a class's private variables. They help protect the data, when creating classes. 
+    // A getter method returns a value while the setter sets or updates the value. 
     // Getters and Setters
     public String getProviderLocationGuid() {
         return providerLocationGuid;
@@ -366,7 +369,8 @@ public class VaccineProviderInfo {
     // *    Availability: http://www.chatgpt.com
     // Convert the ArrayList to a HashSet to remove duplicates
     // Indicates that a method declaration is intended to override a method declaration in a supertype
-    // These equals and hashCode methods help properly detect the duplicates in the store number and street address. 
+    // These equals and hashCode methods help properly detect the duplicates in the phone number and street address. 
+    // Better to use phone number rather than store number, since not every independent pharmacy has a store number (it's just for chain pharmacies).
     @Override
     public boolean equals(Object o) {
         // If the two objects are the same instance (same memory address), they are equal.
@@ -379,7 +383,7 @@ public class VaccineProviderInfo {
         VaccineProviderInfo that = (VaccineProviderInfo) o;
 
         // Compare the relevant fields for equality, this way we can remove the duplicates of the same store number and the street address. 
-        return locStoreNo.equals(that.locStoreNo) &&
+        return locPhone.equals(that.locPhone) &&
                locAdminStreet1.equalsIgnoreCase(that.locAdminStreet1); // Case-insensitive
     }
 
@@ -392,6 +396,50 @@ public class VaccineProviderInfo {
     public int hashCode() {
         // Combines the hash codes of the provided fields into one hash code. 
         // Two objects considered equal by equals will have the same hash code, which is a requirement in Java.
-        return Objects.hash(locStoreNo.toLowerCase(), locAdminStreet1.toLowerCase());
+        return Objects.hash(locPhone.toLowerCase(), locAdminStreet1.toLowerCase());
     }
+
+    //  the default toString method of the Object class is being called for your VaccineProviderInfo objects if we don't have a toString method written
+
+    // We need to create a toString method to override the default method, otherwise the code will output VaccineProviderInfo@63f34170, etc. 
+    @Override
+    public String toString() {
+        return "Vaccine Locations{" +
+                // "providerLocationGuid='" + providerLocationGuid + '\'' +
+                // ", locStoreNo='" + locStoreNo + '\'' +
+                "Phone='" + locPhone + '\'' +
+                ", Name='" + locName + '\'' +
+                ", Street1='" + locAdminStreet1 + '\'' +
+                // ", locAdminStreet2='" + locAdminStreet2 + '\'' +
+                ", City='" + locAdminCity + '\'' +
+                ", State='" + locAdminState + '\'' +
+                ", Zip='" + locAdminZip + '\'' +
+                // ", sundayHours='" + sundayHours + '\'' +
+                // ", mondayHours='" + mondayHours + '\'' +
+                // ", tuesdayHours='" + tuesdayHours + '\'' +
+                // ", wednesdayHours='" + wednesdayHours + '\'' +
+                // ", thursdayHours='" + thursdayHours + '\'' +
+                // ", fridayHours='" + fridayHours + '\'' +
+                // ", saturdayHours='" + saturdayHours + '\'' +
+                // ", webAddress='" + webAddress + '\'' +
+                // ", preScreen='" + preScreen + '\'' +
+                ", insuranceAccepted='" + insuranceAccepted + '\'' +
+                ", walkinsAccepted='" + walkinsAccepted + '\'' +
+                ", providerNotes='" + providerNotes + '\'' +
+                // ", ndc='" + ndc + '\'' +
+                ", medName='" + medName + '\'' +
+                // ", inStock=" + inStock +
+                // ", supplyLevel='" + supplyLevel + '\'' +
+                // ", quantityLastUpdated='" + quantityLastUpdated + '\'' +
+                // ", latitude='" + latitude + '\'' +
+                // ", longitude='" + longitude + '\'' +
+                ", category='" + category + '\'' +
+                // ", unnamedColumn='" + unnamedColumn + '\'' +
+                // ", offersFreeMasks=" + offersFreeMasks +
+                ", minAgeMonths=" + minAgeMonths +
+                ", minAgeYears=" + minAgeYears +
+                // ", bridgeAccessProgram=" + bridgeAccessProgram +
+                '}';
+    }   
+
 }

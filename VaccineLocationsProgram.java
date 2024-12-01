@@ -90,6 +90,16 @@ public class VaccineLocationsProgram {
             ));			
         }// end while loop of scanning in the excel to the fields
 
+        // Accepting the user's input for filtering locations by city/zip code.
+        Scanner userInputScanner = new Scanner(System.in);
+        System.out.println("This is a dataset of COVID vaccination locations. Please enter whether you want to filter by city/zip code(enter 'city' or 'zip')"); 
+        String userInput = userInputScanner.nextLine();
+        System.out.println("You entered: " + userInput);
+
+
+        // Closes the scanner after we're done using it and accepting user input. 
+        // userInputScanner.close();
+
 
 
         // *    Title: Converting Arraylist into HashSet data structure to remove duplicates. This is because a hashset only allows unique elements. Adding an object to the Hashset automatically checks for duplicates based on the equals and hashCode methods that I put in the VaccineProviderInfo.java file.
@@ -103,15 +113,26 @@ public class VaccineLocationsProgram {
         records = new ArrayList<>(uniqueRecords);
 
         
+        if (userInput.equals("city")) {
+            System.out.println("Please enter your city.");
+            String userInputCity = userInputScanner.nextLine();
+            System.out.println("This program will now start filtering locations in your City: " + userInputCity);
+            printLocationsByCity(userInputCity);
+
+        // This can sometimes have extras count because cities might be in other states, like stockton has 2 extra counts for the state of IL. This would require the user to also enter their State, but it's extra input that's not too necessary right now for this project. 
+        // Prints out the number of the number of vaccination locations in city (i.e. Stockton)
+        System.out.print("The number of vaccination locations is in " + userInputCity + " is: ");
+        // System.out.println(countCityVaccinationLocations("Stockton", "CA"));
+        System.out.println(countCityVaccinationLocations(userInputCity));
+        }
+
         // System.out.println("Unique records count: " + records.size());
 
         // Prints out the number of the number of vaccination locations
-        System.out.print("The number of vaccination locations is: ");
+        System.out.print("The number of total vaccination locations in America is: ");
         System.out.println(countCityVaccinationLocations());
 
-        // Prints out the number of the number of vaccination locations in Stockton 
-        System.out.print("The number of vaccination locations is in Stockton, CA is: ");
-        System.out.println(countCityVaccinationLocations("Stockton", "CA"));
+
 
 
         // for (VaccineProviderInfo provider : records) {
@@ -149,7 +170,6 @@ public class VaccineLocationsProgram {
             // .get Returns the element at the specified position in this list.
             if(records.get(i).getLocAdminCity().trim().equalsIgnoreCase(city) && records.get(i).getLocAdminState().equalsIgnoreCase(state))
                 count++;
-
             // String normalizedCity = records.get(i).getLocAdminCity().replaceAll("\\s+", " ").trim();
             // if (normalizedCity.equalsIgnoreCase(city)) 
             // debugging, this doesn't help the count either, which says that there might not be any special or hidden characters 
@@ -158,8 +178,37 @@ public class VaccineLocationsProgram {
         return count;
     }
 
-    
+    // Print locations by city only, not by city and state
+    public static int countCityVaccinationLocations(String city)  {
+        int count = 0;        
+        // goes through the whole record to find vaccination locations in a given city
+        for(int i = 0; i < records.size(); i++) {
+            // can also use equalsIgnoreCase(city) or set both to toLowerCase
+            // .get Returns the element at the specified position in this list.
+            if(records.get(i).getLocAdminCity().trim().equalsIgnoreCase(city))
+                count++;
+            // String normalizedCity = records.get(i).getLocAdminCity().replaceAll("\\s+", " ").trim();
+            // if (normalizedCity.equalsIgnoreCase(city)) 
+            // debugging, this doesn't help the count either, which says that there might not be any special or hidden characters 
+            // also doesnt take into account the states 
+        }        
+        return count;
+    }
 
+    public static void printLocationsByCity(String city) {
+        System.out.println("Locations in " + city + ":");
+    
+        // Convert the city name to lowercase for case-insensitive matching
+        // Enhanced for loop, similar to a for loop 
+        for (VaccineProviderInfo provider : records) {
+            if (provider.getLocAdminCity().equalsIgnoreCase(city)) {
+                System.out.println(provider); // Print the provider details
+            }
+        }
+    }
+
+    
+    // this was for the latitude and longitude since there was a bug, dunno if it helped though, I just changed it to strings for now 
     //  private static boolean isValidDouble(String value) {
     //      if (value == null || value.isEmpty()) {
     //          return false;
