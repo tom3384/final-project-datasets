@@ -33,8 +33,8 @@ public class VaccineProviderInfo {
     private boolean inStock;
     private String supplyLevel;
     private String quantityLastUpdated;
-    private double latitude;
-    private double longitude;
+    private String latitude;
+    private String longitude;
     private String category;
     private String unnamedColumn;
     private boolean offersFreeMasks;
@@ -49,7 +49,7 @@ public class VaccineProviderInfo {
                         String wednesdayHours, String thursdayHours, String fridayHours, String saturdayHours,
                         String webAddress, String preScreen, String insuranceAccepted, String walkinsAccepted,
                         String providerNotes, String ndc, String medName, boolean inStock, String supplyLevel,
-                        String quantityLastUpdated, double latitude, double longitude, String category,
+                        String quantityLastUpdated, String latitude, String longitude, String category,
                         String unnamedColumn, boolean offersFreeMasks, int minAgeMonths, int minAgeYears,
                         boolean bridgeAccessProgram) {
         this.providerLocationGuid = providerLocationGuid;
@@ -297,19 +297,19 @@ public class VaccineProviderInfo {
         this.quantityLastUpdated = quantityLastUpdated;
     }
 
-    public double getLatitude() {
+    public String getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
