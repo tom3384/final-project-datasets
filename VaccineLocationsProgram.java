@@ -93,6 +93,7 @@ public class VaccineLocationsProgram {
         // Closes the scanner after we're done using it and accepting user input. 
         // userInputScanner.close();
 
+        // If yes, the user does want to see all the vaccine brands shown, then proceed with this code (because below this if statement, we remove the duplicates by converting to hash set)
         if (userInputBrand.equals("y")) {
             if (userInput.equals("zip")) {
                 System.out.println("Please enter your zip code.");
@@ -129,6 +130,7 @@ public class VaccineLocationsProgram {
 
       
         // Code below I wrote using what I learned.
+        // If the user inputted zip, it will prompt the user to enter their zip, and it will filter vaccination locations by zip code. 
         if (userInput.equals("zip")) {
             System.out.println("Please enter your zip code.");
             String userInputZip = userInputScanner.nextLine();
@@ -175,7 +177,7 @@ public class VaccineLocationsProgram {
     // returns the number of vaccination locations in a specified city (file is currently set for COVID vaccination location datasets)
     // Adding the state accounts for if there's cities in other states (for example, there were 2 cities of Stockton in IL), we could account for this by doing another && records.get(i).getLocAdminState().equalsIgnoreCase(state)
     // Counts 105 locations before including the state, and 102 locations after specifying the state, which matches up. However, the count is still off a bit, I checked the csv file to make sure that there were no empty spaces or anything. Not sure why, or maybe I'm misreading the csv file. Should be maybe 138 count? I made sure to set it to equalsIgnoreCase... 
-    // .trim to remove any whitespace that the creators might have accidentally added in the csv 
+    // .trim to remove any whitespace that the creators might have accidentally added in the csv, that might intefere with our data collection 
     public static int countCityVaccinationLocations(String city, String state)  {
         int count = 0;        
         // goes through the whole record to find vaccination locations in a given city
