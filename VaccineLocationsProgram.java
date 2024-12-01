@@ -180,11 +180,10 @@ public class VaccineLocationsProgram {
         }
         try {
             Integer.parseInt(value);
-            return true;
-
-        // Thrown to indicate that the application has attempted to convert a string to one of the numeric types, but that the string does not have the appropriate format.
+            return true;           
         } catch (NumberFormatException e) {
             return false;
+            // Thrown to indicate that the application has attempted to convert a string to one of the numeric types, but that the string does not have the appropriate format.
         }
     }
 

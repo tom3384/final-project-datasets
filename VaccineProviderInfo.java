@@ -369,15 +369,29 @@ public class VaccineProviderInfo {
     // These equals and hashCode methods help properly detect the duplicates in the store number and street address. 
     @Override
     public boolean equals(Object o) {
+        // If the two objects are the same instance (same memory address), they are equal.
         if (this == o) return true;
+
+        // Checks if the other object is null or of a different class (if so, then they cannot be equal)
         if (o == null || getClass() != o.getClass()) return false;
+
+        // Cast the object to the same/correct class to compare specific fields 
         VaccineProviderInfo that = (VaccineProviderInfo) o;
+
+        // Compare the relevant fields for equality, this way we can remove the duplicates of the same store number and the street address. 
         return locStoreNo.equals(that.locStoreNo) &&
                locAdminStreet1.equalsIgnoreCase(that.locAdminStreet1); // Case-insensitive
     }
 
+    // Use equals to define what makes two objects equal.
+    // Use hashCode to ensure equal objects generate the same hash value.
+
+    // The hashCode method generates a unique integer for each object based on its fields. Two objects that are equal (based on equals) must have the same hashCode.
+    // hashCode ensures that equal objects generate the same hash code, which is critical for performance in hash-based collections (like HashSet).
     @Override
     public int hashCode() {
+        // Combines the hash codes of the provided fields into one hash code. 
+        // Two objects considered equal by equals will have the same hash code, which is a requirement in Java.
         return Objects.hash(locStoreNo.toLowerCase(), locAdminStreet1.toLowerCase());
     }
 }
