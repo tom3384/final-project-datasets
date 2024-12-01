@@ -39,15 +39,6 @@ public class VaccineLocationsProgram {
             // Splits up with a comma because that is what we do with CSV files. 
             String[] fields = record.split(",");         
 
-            // Debugging to see if parsing cities, but this prints all the cities. Maybe have to set .equals
-            // String city = fields[6];
-            // System.out.println("Parsed city: " + city);
-
-            // Validate and parse latitude and longitude
-            // double latitude = isValidDouble(fields[26]) ? Double.parseDouble(fields[26]) : 0.0;
-            // double longitude = isValidDouble(fields[27]) ? Double.parseDouble(fields[27]) : 0.0;
-
-
             records.add(new VaccineProviderInfo(
                 fields[0],   // providerLocationGuid (Field 0)
                 fields[1],   // locStoreNo (Field 1)
@@ -88,7 +79,7 @@ public class VaccineLocationsProgram {
                 isValidInteger(fields[32]) ? Integer.parseInt(fields[32]) : 0, // minAgeYears
                 Boolean.parseBoolean(fields[33])  // bridgeAccessProgram (Field 33) - parsed as boolean
             ));			
-        }// end while loop of scanning in the excel to the fields
+        }// end while loop of scanning in the excel CSV to the fields
 
         // Accepting the user's input for filtering locations by city/zip code.
         Scanner userInputScanner = new Scanner(System.in);
@@ -96,21 +87,58 @@ public class VaccineLocationsProgram {
         String userInput = userInputScanner.nextLine();
         System.out.println("You entered: " + userInput);
 
-
+        System.out.println("Would you like to see all the COVID vaccine brands offered? (Recommended only if filtering by zip, otherwise it will list too many locations.)");
+        System.out.println("enter 'y' for yes, or 'n' for no");
+        String userInputBrand = userInputScanner.nextLine();
         // Closes the scanner after we're done using it and accepting user input. 
         // userInputScanner.close();
 
+        if (userInputBrand.equals("y")) {
+            if (userInput.equals("zip")) {
+                System.out.println("Please enter your zip code.");
+                String userInputZip = userInputScanner.nextLine();
+                System.out.println("This program will now start filtering vaccination locations in your Zip code: " + userInputZip);
+                printLocationsByZip(userInputZip);
+                return;
+                // We return here, so it doesn't repeat the loops below. We could also fix it by entering another else statement to cover the whole code below.
+    
+                // Prints out the number of the number of vaccination locations in zip
+                // System.out.print("The number of vaccination locations in " + userInputZip + " is: ");
+                // System.out.println(countCityVaccinationLocationsZip(userInputZip));                
+            } else if (userInput.equals("city")) {
+                System.out.println("Please enter your city.");
+                String userInputCity = userInputScanner.nextLine();
+                System.out.println("This program will now start filtering vaccination locations in your City: " + userInputCity);
+                printLocationsByCity(userInputCity);
+                return;
+            }
+        } 
+     
 
-
-        // *    Title: Converting Arraylist into HashSet data structure to remove duplicates. This is because a hashset only allows unique elements. Adding an object to the Hashset automatically checks for duplicates based on the equals and hashCode methods that I put in the VaccineProviderInfo.java file.
+        // *    Title: Converting Arraylist into HashSet data structure to remove duplicates (because of multiple brands offered).
+        // This is because a hashset only allows unique elements. Adding an object to the Hashset automatically checks for duplicates based on the equals and hashCode methods that I put in the VaccineProviderInfo.java file.
         // The original ArrayList data structure is still useful because the duplicates in the csv file are for different COVID vaccine brands, which can be used later for something else if we need to (as long as we do it before converting to HashSet).
         // *    Author: Chatgpt
         // *    Date: 2024
         // *    Availability: http://www.chatgpt.com
         // Convert the ArrayList to a HashSet to remove duplicates
+        // I used ChatGPT for these 2 lines of code, as well as the equals and hashNode overrides in VaccineProvider info. We did not learn hashSets in class, so the AI was helpful for me to learn how to use it to remove duplicates.
         Set<VaccineProviderInfo> uniqueRecords = new HashSet<>(records);
         // Convert the HashSet back to an ArrayList
         records = new ArrayList<>(uniqueRecords);
+
+      
+        // Code below I wrote using what I learned.
+        if (userInput.equals("zip")) {
+            System.out.println("Please enter your zip code.");
+            String userInputZip = userInputScanner.nextLine();
+            System.out.println("This program will now start filtering vaccination locations in your Zip code: " + userInputZip);
+            printLocationsByZip(userInputZip);
+
+            // Prints out the number of the number of vaccination locations in zip
+            System.out.print("The number of vaccination locations in " + userInputZip + " is: ");
+            System.out.println(countCityVaccinationLocationsZip(userInputZip));   
+            }       
 
         // If the user entered city, it will prompt the user to enter their city and will filter locations by their city. 
         if (userInput.equals("city")) {
@@ -126,35 +154,9 @@ public class VaccineLocationsProgram {
         System.out.println(countCityVaccinationLocations(userInputCity));
         }
 
-        if (userInput.equals("zip")) {
-            System.out.println("Please enter your zip code.");
-            String userInputZip = userInputScanner.nextLine();
-            System.out.println("This program will now start filtering vaccination locations in your Zip code: " + userInputZip);
-            printLocationsByZip(userInputZip);
-
-            // Prints out the number of the number of vaccination locations in zip
-            System.out.print("The number of vaccination locations in " + userInputZip + " is: ");
-            System.out.println(countCityVaccinationLocationsZip(userInputZip));
-        }
-        
-
-        // System.out.println("Unique records count: " + records.size());
-
         // Prints out the number of the number of vaccination locations
         System.out.print("The number of total vaccination locations in America is: ");
         System.out.println(countCityVaccinationLocations());
-
-
-
-
-        // for (VaccineProviderInfo provider : records) {
-        //     System.out.println(provider.getLocStoreNo() + ": " + provider.getLocPhone());
-        // }
-
-
-
-
-
 
     }// end main 
 
@@ -196,14 +198,10 @@ public class VaccineLocationsProgram {
 
         for (VaccineProviderInfo provider : records) {
             
-            // if (provider.getLocAdminZip().equalsIgnoreCase(zip)) {
-
             String providerZip = provider.getLocAdminZip(); 
 
             // The substring() method returns a substring from the string, since some of the zip codes in the CSV use the 9 digit zip code.
-            // if (providerZip != null && length greater than or equal to 5)
             // If we do it without null and length, then it will give us error code like: Exception in thread "main" java.lang.StringIndexOutOfBoundsException: Range [0, 5) out of bounds for length 2
-            // if (providerZip.substring(0,5).equals(zip)) {
             if (providerZip != null && providerZip.length() >= 5 && 
                 providerZip.substring(0, 5).equals(zip)) {
                 count++;
@@ -221,10 +219,6 @@ public class VaccineLocationsProgram {
             // .get Returns the element at the specified position in this list.
             if(records.get(i).getLocAdminCity().trim().equalsIgnoreCase(city))
                 count++;
-            // String normalizedCity = records.get(i).getLocAdminCity().replaceAll("\\s+", " ").trim();
-            // if (normalizedCity.equalsIgnoreCase(city)) 
-            // debugging, this doesn't help the count either, which says that there might not be any special or hidden characters 
-            // also doesnt take into account the states 
         }        
         return count;
     }
@@ -253,9 +247,6 @@ public class VaccineLocationsProgram {
             String providerZip = provider.getLocAdminZip(); 
 
             // The substring() method returns a substring from the string.
-            // if (providerZip != null && length greater than or equal to 5)
-            // If we do it without null and length, then it will give us error code like: Exception in thread "main" java.lang.StringIndexOutOfBoundsException: Range [0, 5) out of bounds for length 2
-            // if (providerZip.substring(0,5).equals(zip)) {
             if (providerZip != null && providerZip.length() >= 5 && 
                 providerZip.substring(0, 5).equals(zip)) {
                 System.out.println(provider); // Print the provider details
@@ -263,20 +254,7 @@ public class VaccineLocationsProgram {
         }
     }
 
-    
-    // this was for the latitude and longitude since there was a bug, dunno if it helped though, I just changed it to strings for now 
-    //  private static boolean isValidDouble(String value) {
-    //      if (value == null || value.isEmpty()) {
-    //          return false;
-    //      }
-    //      try {
-    //          Double.parseDouble(value);
-    //          return true;
-    //      } catch (NumberFormatException e) {
-    //          return false;
-    //      }
-    //  }
-    
+
     // helper method to check if a string is a valid integer
     private static boolean isValidInteger(String value) {
         // checking if the value is null or empty, to return false 
