@@ -7,14 +7,25 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.HashMap;
 
 public class VaccineLocationsProgram {
     //arraylist
     // Code from class notes and previous assignment
 	public static ArrayList<VaccineProviderInfo> records = new ArrayList<VaccineProviderInfo>();
 
+    // Learned how to use a HashMap data structure from ChatGPT to count how many vaccination locations per city. 
+    // *    Author: Chatgpt
+    // *    Date: 2024
+    // *    Availability: http://www.chatgpt.com
+    // private restricts access to this cityProviders variable within this current class, so other classes can't directly access or modify this HashMap. This ensures encapsulation by hiding the data structure from outside classes, and so that we can only access/modify it in this same class. 
+    // static makes it a class-level member so it is shared among all instances of the class. There's only one copy of cityProviders for the entire class, no matter how many objects of this class are created. This ensures a single and shared collection since it tracks data.
+    // A city can have multiple providers, so the HashMap is storing a list of the VaccineProviderInfo objects.
+    // HashMap has the benefit of fast retrieval of all providers of a specific city using the city name as the key. 
+    private static HashMap<String, List<VaccineProviderInfoFlu>> cityProviders = new HashMap<>();
 
 	public static void main(String[] args) {
 		//read in our data and create this records Arraylist
@@ -34,7 +45,9 @@ public class VaccineLocationsProgram {
 		input.nextLine();
 
         // Code to parse through the file 
+        // .hasNext Returns true if this scanner has another token in its input.
         while(input.hasNext()) {
+            // .nextLine Advances this scanner past the current line and returns the input that was skipped.
             String record = input.nextLine();
             // Splits up with a comma because that is what we do with CSV files. 
             String[] fields = record.split(",");         
@@ -69,6 +82,7 @@ public class VaccineLocationsProgram {
                 fields[26],  // latitude (Field 26) - comes up with a bug if parsed as double, 
                              // double bug maybe because latitude/longitude at the top of the CSV is not a double
                              // might have to use isValidDouble if we use it as a Double  
+                             // per the specification data file, it's probably because the data type is varchar
                 fields[27],  // longitude (Field 27) - comes up with a bug if parsed as double
                 fields[28],  // category (Field 28)
                 fields[29],  // unnamedColumn (Field 29)
@@ -87,6 +101,7 @@ public class VaccineLocationsProgram {
         String userInput = userInputScanner.nextLine();
         System.out.println("You entered: " + userInput);
 
+        // Asks the user if they want to see all the COVID vaccine brands per location. 
         System.out.println("Would you like to see all the COVID vaccine brands offered? (Recommended only if filtering by zip, otherwise it will list too many locations.)");
         System.out.println("enter 'y' for yes, or 'n' for no");
         String userInputBrand = userInputScanner.nextLine();
@@ -100,6 +115,7 @@ public class VaccineLocationsProgram {
                 String userInputZip = userInputScanner.nextLine();
                 System.out.println("This program will now start filtering vaccination locations in your Zip code: " + userInputZip);
                 printLocationsByZip(userInputZip);
+                userInputScanner.close();
                 return;
                 // We return here, so it doesn't repeat the loops below. We could also fix it by entering another else statement to cover the whole code below.
     
@@ -111,6 +127,7 @@ public class VaccineLocationsProgram {
                 String userInputCity = userInputScanner.nextLine();
                 System.out.println("This program will now start filtering vaccination locations in your City: " + userInputCity);
                 printLocationsByCity(userInputCity);
+                userInputScanner.close();
                 return;
             }
         } 
@@ -159,6 +176,20 @@ public class VaccineLocationsProgram {
         // Prints out the number of the number of vaccination locations
         System.out.print("The number of total vaccination locations in America is: ");
         System.out.println(countCityVaccinationLocations());
+
+        System.out.println("Would you like to see how many Flu shot providers there are in each city in California?");
+        System.out.println("enter 'y' for yes, or 'n' for no");
+        String userInputFluCount = userInputScanner.nextLine();
+
+        if (userInputFluCount.equals("y")) {
+            // Flu vaccination location dataset. This is in addition to the COVID vaccination location dataset above. 
+            String fileNameFlu = "Vaccines.gov__Flu_vaccinating_provider_locations.csv";
+            readFluVaccinationLocationsAndCityCount(fileNameFlu);
+            printCityDetails();
+        }
+
+        //input.close();
+        userInputScanner.close();
 
     }// end main 
 
@@ -257,6 +288,120 @@ public class VaccineLocationsProgram {
     }
 
 
+    public static void readFluVaccinationLocationsAndCityCount(String filename) {
+        Scanner input = null; 
+        
+        try {
+			input = new Scanner(new File(filename));
+		} catch (FileNotFoundException e) {
+			//file not found. Signals that an attempt to open the file denoted by a specified pathname has failed.
+			System.out.println("file not found");
+            // printStackTrace() helps the programmer to understand where the actual problem occurred. It helps to trace the exception.
+			e.printStackTrace();
+		}
+
+        //reading in the header
+		input.nextLine();
+
+        while(input.hasNext()) {
+            // .nextLine Advances this scanner past the current line and returns the input that was skipped.
+            String record = input.nextLine();
+            // Splits up with a comma because that is what we do with CSV files. 
+            String[] fields = record.split(",");   
+            
+            // Some of the cities are in all capital letters, while some are lower case. This .toLowerCase helps make sure they are all consistent. Trim also removes any accidental whitespace that may have come up (it would interfere with equals comparisons later).
+            String city = fields[6].trim().toLowerCase(); 
+
+            VaccineProviderInfoFlu provider = new VaccineProviderInfoFlu(
+                fields[0],   // provider_location_guid
+                fields[1],   // loc_store_no
+                fields[2],   // loc_phone
+                fields[3],   // loc_name
+                fields[4],   // loc_admin_street1
+                fields[5],   // loc_admin_street2
+                fields[6],   // loc_admin_city
+                fields[7],   // loc_admin_state
+                fields[8],   // loc_admin_zip
+                fields[9],   // sunday_hours
+                fields[10],  // monday_hours
+                fields[11],  // tuesday_hours
+                fields[12],  // wednesday_hours
+                fields[13],  // thursday_hours
+                fields[14],  // friday_hours
+                fields[15],  // saturday_hours
+                fields[16],  // web_address
+                fields[17],  // pre_screen
+                fields[18],  // insurance_accepted
+                fields[19],  // walkins_accepted
+                fields[20],  // provider_notes
+                fields[21],  // searchable_name
+                Boolean.parseBoolean(fields[22]), // in_stock (convert to boolean)
+                fields[23],  // supply_level
+                fields[24],  // quantity_last_updated
+                fields[25],  // latitude
+                fields[26],  // longitude
+                fields[27]  // category
+            );
+
+            // *    Author: Chatgpt
+            // *    Date: 2024
+            // *    Availability: http://www.chatgpt.com
+
+            // .put Associates the specified value with the specified key in this map. If the map previously contained a mapping for the key, the old value is replaced.
+            // Checks if the city exists in the Hashmap, if it's not then proceed
+            if (!cityProviders.containsKey(city)) {
+                // Inserts the city into the hashmap and associates it with an empty ArrayList
+                cityProviders.put(city, new ArrayList<>());
+            }
+            // Grabs the list of providers that are in the city and adds those providers to the city's list
+            cityProviders.get(city).add(provider);
+        }
+
+        // Close the scanner
+        input.close();
+    }
+
+    public static void printCityDetails() {
+        System.out.println("City details for California:");
+    
+        // Loop through each city in the cityProviders map
+        // .keySet Returns a Set view of the keys contained in this map. 
+        for (String city : cityProviders.keySet()) {
+ 
+            // Get the list of providers for the city
+            List<VaccineProviderInfoFlu> providers = cityProviders.get(city);
+
+            // We're going to check for providers located in California, overwise it will just list the count of providers of cities all across the USA
+            boolean isCalifornia = false; 
+            for (VaccineProviderInfoFlu provider : providers) {
+                // Check the state for each provider and if it's "CA" for California, we will print the count for this city
+                if (provider.getLocAdminState().equalsIgnoreCase("CA")) {
+                    isCalifornia = true;
+                    break; // If we found a provider in California, stop checking further in this for loop, so we can go back and continue through the rest of the CSV and find another city that is in California
+                }
+            }
+
+            // Checks if isCalifornia is true, meaning the city is in California
+            if (isCalifornia) {
+            // Print the city's name
+            System.out.println("Californian City: " + city);
+    
+            // Print the number of providers in this city
+            System.out.println("Number of Flu vaccine providers in this Californian city: " + providers.size());
+
+            }
+    
+
+               
+
+
+            // Loop through the list of providers and print their details
+            // for (VaccineProviderInfoFlu provider : providers) {
+            //     System.out.println(provider);
+            // }
+        }
+    }
+
     // helper method to check if a string is a valid integer
     private static boolean isValidInteger(String value) {
         // checking if the value is null or empty, to return false 
@@ -270,6 +415,9 @@ public class VaccineLocationsProgram {
             return false;
             // Thrown to indicate that the application has attempted to convert a string to one of the numeric types, but that the string does not have the appropriate format.
         }
+
+
+
     }
 
 }
