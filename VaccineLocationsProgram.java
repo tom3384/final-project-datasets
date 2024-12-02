@@ -1,4 +1,3 @@
-
 // Tom Nguyen
 // 11/29/24
 // CPSC 39 project
@@ -23,7 +22,7 @@ public class VaccineLocationsProgram {
     // *    Availability: http://www.chatgpt.com
     // private restricts access to this cityProviders variable within this current class, so other classes can't directly access or modify this HashMap. This ensures encapsulation by hiding the data structure from outside classes, and so that we can only access/modify it in this same class. 
     // static makes it a class-level member so it is shared among all instances of the class. There's only one copy of cityProviders for the entire class, no matter how many objects of this class are created. This ensures a single and shared collection since it tracks data.
-    // A city can have multiple providers, so the HashMap is storing a list of the VaccineProviderInfo objects.
+    // A city can have multiple providers, so the HashMap is storing a list of the VaccineProviderInfoFlu objects.
     // HashMap has the benefit of fast retrieval of all providers of a specific city using the city name as the key. 
     private static HashMap<String, List<VaccineProviderInfoFlu>> cityProviders = new HashMap<>();
 
